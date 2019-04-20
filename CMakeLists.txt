@@ -16,4 +16,3 @@ target_include_directories(lem-in PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/inc
 
 target_link_directories(lem-in PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}../libtf)
 target_link_libraries(lem-in ft)
-

@@ -10,38 +10,33 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-
 #include "lemin.h"
 
-int			ft_readants(int fd, char **str)
-{
-	int		ants;
-	int		i;
-
-	if ((get_next_line(fd, str) < 0) || ft_strlen(*str) == 0)
-		return (0);
-	i = 0;
-	while (ft_isdigit((*str)[i]))
-		i++;
-	ants = (i == ft_strlen(*str)) ? ft_atoi(*str) : 0;
-	ft_printf("ft_readants>%s\n",*str);
-	ft_strdel(str);
-	return (ants);
-}
-
-int	ft_cmp(void const *vertex1, void const *vertex2)
+static int	ft_vertexcmp(void const *vertex1, void const *vertex2)
 {
 	t_vertex const *v1;
 	t_vertex const *v2;
 
 	v1 = vertex1;
 	v2 = vertex2;
-	ft_printf("{%s},{%s}", v1->name, v2->name);
 	if (ft_strequ(v1->name, v2->name))
 		return (1);
 	if ((v1->x == v2->x) && (v1->y == v2->y))
 		return (1);
 	return (0);
+}
+
+void		ft_setlabel(t_graph *graph, t_vertex *vertex, int label)
+{
+	if (label == 1)
+		graph->start = vertex;
+	if (label == 2)
+		graph->end = vertex;
+}
+
+int			ft_iscomment(char const *str)
+{
+	return ((str != NULL) && (*str == '#'));
 }
 
 int 		ft_fillgraph(t_graph *graph, int fd, char **str)
@@ -52,77 +47,75 @@ int 		ft_fillgraph(t_graph *graph, int fd, char **str)
 	label = 0;
 	while ((get_next_line(fd, str) > 0) && !(ft_islink(*str)))
 	{
-		ft_printf("ft_fillgraph>%s\n",*str);
-		if (**str != '#')
+		vertex = (t_vertex){.name = NULL, .x = 0, .y = 0, .status = 0,
+							.link = NULL, .root = NULL};
+		if (ft_iscomment(*str))
 		{
-			ft_readvertex(*str, &vertex);
-			ft_printf("{%s;%d;%d}\n",vertex.name, vertex.x, vertex.y);
-			if (ft_lstfind(graph->head, &vertex, ft_cmp))
-			{
-				ft_error("vertex is not unique");
-				ft_strdel(str);
-			}
-			ft_printf("{%s;%d;%d}\n",vertex.name, vertex.x, vertex.y);
-			ft_lstadd(&(graph->head), ft_lstnew(&vertex, sizeof(t_vertex)));
-			ft_vertexshow(graph->head);
-			if (label == 1)
-				graph->start = graph->head->content;
-			if (label == 2)
-				graph->end = graph->head->content;
-			label = 0;
-		}
-		else
 			label = (label == 0) ? ft_label(*str) : label;
-		ft_strdel(str);
-	}
-	return (1);
-}
-
-int 		ft_linkgraph(t_graph *graph, int fd, char **str)
-{
-	char	*name1;
-	char	*name2;
-	int		stat;
-
-	while (*str)
-	{
-		ft_printf("ft_linkgraph>%s\n",str);
-		if (**str != '#')
-		{
-			if (!ft_islink(*str))
-				return (0);
-			name1 = ft_strsub(*str, 0, ft_strchr(*str, '-') - *str);
-			name2 = ft_strchr(*str, '-') + 1;
-			stat = ft_linkvertex(graph, name1, name2);
-			ft_strdel(&name1);
-			if (stat == 0)
-				return (0);
+			continue;
 		}
+		ft_readvertex(*str, &vertex);
+		ft_error((ft_lstfind(graph->head, &vertex, ft_vertexcmp) != NULL),
+				ERR_UNIQUE);
+		ft_lstadd(&(graph->head), ft_lstnew(&vertex, sizeof(t_vertex)));
+		if (label)
+			ft_setlabel(graph, graph->head->content, label);
+		label = 0;
 		ft_strdel(str);
-		if (get_next_line(fd, str) < 1)
-			return (1);
 	}
 	return (0);
 }
 
-int			ft_readfile(t_graph *graph, int fd)
+int 	ft_linkgraph(t_graph *graph, int fd, char **str)
 {
-	int		stat;
-	char	*str;
-	int		ants;
+	char	*delim;
 
-	if ((ants = ft_readants(fd, &str)) == 0)
-		ft_error(ANTS);
-	if ((stat = ft_fillgraph(graph, fd, &str)) == 1)
-		stat = ft_linkgraph(graph, fd, &str);
-	//TODO: check begin and end
-	//TODO: check link between begin and end
-	ft_strdel(&str);
-	return ((stat) ? ants : 0);
+	while (*str && **str)
+	{
+		if (ft_iscomment(*str))
+		{
+			ft_strdel(str);
+			continue;
+		}
+		ft_error(!ft_islink(*str), ERR_INVALID_LINK);
+		delim = ft_strchr(*str, '-');
+		*delim = '\0';
+		ft_printf("[%s][%s]",*str, delim + 1);
+		ft_error(!ft_linkvertex(graph, *str, delim + 1), "ft_linkvertex");
+		ft_strdel(str);
+		get_next_line(fd, str);
+	}
+	return (0);
 }
 
-void ft_error(char const *msg)
+int		ft_readfile(int fd, t_graph *graph, int *ants)
 {
-	ft_dprintf(2, "ERROR: %s\n", msg);
-	exit(0);
+	char	*str;
+
+	ft_error((get_next_line(fd, &str) < 0), ERR_READ);
+	ft_error(!ft_isnumber(str), ERR_ANTS);
+	*ants = ft_atoi(str);
+	ft_error(ft_fillgraph(graph, fd, &str), ERR_FILLGRAPH);
+	ft_error(ft_linkgraph(graph, fd, &str), ERR_LINKGRAPH);
+	ft_error((graph->head == NULL), ERR_EMTPY_GRAPH);
+	ft_error((graph->start == NULL), ERR_NOSTART);
+	ft_error((graph->end == NULL), ERR_NOEND);
+	ft_error((ft_bfs(graph) == NULL), ERR_SE_LINK);
+	ft_strdel(&str);
+	return (0);
+}
+
+void	ft_error(int trigger, char const *msg)
+{
+	if (trigger)
+	{
+		ft_dprintf(2, "ERROR: %s\n", msg);
+		exit(0);
+	}
+}
+
+void	ft_warning(int trigger, char const *msg)
+{
+	if (trigger)
+		ft_dprintf(2, "WARNING: %s\n", msg);
 }
