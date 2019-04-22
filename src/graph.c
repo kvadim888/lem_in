@@ -28,9 +28,9 @@ int			ft_linkvertex(t_graph *graph, char *name1, char *name2)
 	t_list	*v2;
 
 	v1 = ft_lstfind(graph->head, name1, ft_namecmp);
-	ft_error((v1 == NULL), ERR_UNKNOWN);
+	ft_error((v1 == NULL), "Unknown links");
 	v2 = ft_lstfind(graph->head, name2, ft_namecmp);
-	ft_error((v2 == NULL), ERR_UNKNOWN);
+	ft_error((v2 == NULL), "Unknown links");
 	return (ft_newlink(v1->content, v2->content) &&
 			ft_newlink(v2->content, v1->content));
 }

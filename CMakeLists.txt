@@ -7,7 +7,7 @@ add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/libft)
 
 aux_source_directory(${CMAKE_CURRENT_SOURCE_DIR}/src LEMIN_SRC)
 
-set(CMAKE_C_FLAGS "-Wall -Wextra -Werror")
+#set(CMAKE_C_FLAGS "-Wall -Wextra -Werror")
 
 add_executable(lem-in ${LEMIN_SRC})
 

@@ -14,18 +14,16 @@
 
 static void		ft_printstep(t_list *lst, t_graph *graph)
 {
-	static int	continious = 0;
+	static char	delim = '\0';
 	t_ant		*ant;
 
 	ant = lst->content;
 	if (ant && (ant->vertex != NULL) && (ant->vertex != graph->start))
 	{
-		if (continious)
-			ft_printf(" ");
-		ft_printf("L%d-%s", ant->number, ant->vertex->name);
-		continious = 1;
+		ft_printf("L%d-%s%c", ant->number, ant->vertex->name, delim);
+		delim = ' ';
 	}
-	continious = (lst->next) ? continious : 0;
+	delim = (lst->next) ? delim : 0;
 }
 
 static int		ft_moveants(t_graph *graph, t_list *ant)
@@ -64,10 +62,7 @@ void		ft_lemin(t_graph *graph, int num)
 
 	ants = NULL;
 	while (num > 0)
-	{
-		ft_lstadd(&ants, ft_lstnew(&(t_ant){graph->start, num}, sizeof(t_ant)));
-		num--;
-	}
+		ft_lstadd(&ants, ft_lstnew(&(t_ant){graph->start, num--}, sizeof(t_ant)));
 	while (ft_moveants(graph, ants))
 	{
 		tmp = ants;

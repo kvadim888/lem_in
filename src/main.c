@@ -18,19 +18,15 @@ int		main(int ac, char **av)
 	int			ants;
 	t_graph		graph;
 
-	fd = open(av[ac - 1], O_RDONLY);
 	graph = (t_graph){NULL, NULL, NULL};
+	fd = open(av[ac - 1], O_RDONLY);
+	ft_error((fd < 0), "Can not open file");
 	ft_readfile(fd, &graph, &ants);
-	ft_printf("ants = %d\n", ants);
-	if (ants == 0)
-	{
-		ft_dprintf(2, "ERROR\n");
-		return (1);
-	}
+	ft_printf("Map was readed\n");
 	ft_lstiter(graph.head, ft_vertexshow);
 	ft_edkarp(&graph);
 	ft_lstiter(graph.head, ft_vertexshow);
-//	ft_lemin(&graph,ants);
+	ft_lemin(&graph,ants);
 //	system("leaks lem-in");
 	return (0);
 }
