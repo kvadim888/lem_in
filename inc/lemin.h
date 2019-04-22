@@ -13,13 +13,6 @@
 #ifndef LEMIN_H
 # define LEMIN_H
 
-#define	ANTS		"Invalid amount of ants"
-#define EMTPY_GRAPH	"Empty graph"
-#define	VERT		"Invalid verticies"
-#define	LINK		"Invalid links"
-#define SE_LINK		"Link between start and end doesn't exist"
-#define UNKNOWN		"Unknown links"
-
 # include "libft.h"
 
 typedef struct			s_vertex
@@ -51,7 +44,8 @@ typedef struct			s_ant
 	int					number;
 }						t_ant;
 
-void					ft_error(char const *msg);
+void					ft_error(int trigger, char const *msg);
+void					ft_warning(int trigger, char const *msg);
 
 t_list					*ft_newvertex(char *name, int x, int y);
 int						ft_linkvertex(t_graph *graph, char *name1, char *name2);
@@ -59,9 +53,9 @@ int						ft_newlink(t_vertex *v1, t_vertex *v2);
 
 
 void					ft_resetgraph(t_graph *graph, int reset_links);
-int						ft_fillgraph(t_graph *graph, int fd, char **str);
-int						ft_linkgraph(t_graph *graph, int fd, char **str);
-int						ft_readfile(t_graph *graph, int fd);
+int ft_fillgraph(t_graph *graph, int fd, char **str, t_list **map);
+int ft_linkgraph(t_graph *graph, int fd, char **str, t_list **map);
+int						ft_readfile(int fd, t_graph *graph, int *ants);
 
 void					ft_addflow(t_list *link);
 
@@ -69,19 +63,21 @@ t_list					*ft_bfs(t_graph *graph);
 void					ft_edkarp(t_graph *graph);
 
 int						ft_label(char *str);
+int						ft_isnumber(char *num);
 int						ft_islink(char *str);
-int						ft_readvertex(char *str, t_vertex *vertex);
+
+void					ft_readvertex(char *str, t_vertex *vertex);
 
 void					ft_delpath(t_list **path);
 
 void					ft_lemin(t_graph *graph, int num);
 
-void		ft_addflow(t_list *link);
-t_list		*ft_cutlink(t_list *link);
-void 		ft_linkreduce(t_list *lst);
-t_list		*ft_cutvertex(t_graph *graph, t_list *vertex);
-void 		ft_graphreduce(t_graph *graph);
-void		ft_vertexshow(t_list *lst);
+void					ft_addflow(t_list *link);
+t_list					*ft_cutlink(t_list *link);
+void 					ft_linkreduce(t_list *lst);
+t_list					*ft_cutvertex(t_graph *graph, t_list *vertex);
+void 					ft_graphreduce(t_graph *graph);
+void					ft_vertexshow(t_list *lst);
 
 
 void					ft_bfsreset(t_list *vertex);

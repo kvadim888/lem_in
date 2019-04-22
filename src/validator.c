@@ -12,7 +12,7 @@
 
 #include "lemin.h"
 
-int		ft_label(char *str)
+int			ft_label(char *str)
 {
 	if (*str == '#')
 	{
@@ -24,58 +24,43 @@ int		ft_label(char *str)
 	return (0);
 }
 
-int		ft_islink(char *str)
+int			ft_islink(char *str)
 {
 	return ((*str != '#') && !ft_strchr(str, ' ') && ft_strchr(str, '-'));
 }
 
-int 	ft_isnumber(char *num)
+int 		ft_isnumber(char *num)
 {
-	char *start;
-
-	start = num;
 	while (ft_iswhspace(*num))
 		num++;
 	if (*num == '-')
 		num++;
 	while (ft_isdigit(*num))
 		num++;
-	if (ft_iswhspace(*num) || *num == '\0')
-		return ((int)(num - start));
-	else
-		return (0);
+	while (ft_iswhspace(*num))
+		num++;
+	return (*num == '\0');
 }
 
-int		ft_readvertex(char *str, t_vertex *vertex)
+static void	ft_space(char *c)
 {
-	int		i;
-	int		len;
-
-	vertex->status = 0;
-	vertex->root = NULL;
-	vertex->link = NULL;
-	i = 0;
-	while (ft_isprint(str[i]) && !ft_iswhspace(str[i]) && (str[i] != '-'))
-		i++;
-	if (!ft_iswhspace(str[i]))
-		return (0);
-	vertex->name = ft_strsub(str, 0, (size_t)i);
-	str += i;
-	if ((len = ft_isnumber(str)) > 0)
-		vertex->x = ft_atoi(str);
-	else
-		return (0);
-	str += len;
-	if ((len = ft_isnumber(str)) > 0)
-		vertex->y = ft_atoi(str);
-	else
-		return (0);
-	str += len;
-	while (ft_iswhspace(*str))
-		str++;
-	vertex->root = NULL;
-	vertex->link = NULL;
-	vertex->status = NULL;
-	return (*str == '\0');
+	if (ft_iswhspace(*c))
+		*c =  ' ';
 }
 
+void		ft_readvertex(char *str, t_vertex *vertex)
+{
+	char 	**split;
+
+	ft_striter(str, ft_space);
+	split = ft_strsplit(str, ' ');
+	ft_error((ft_strsplitlen(split) != 3), "split != 3");
+	vertex->name = split[0];
+	ft_error(!ft_isnumber(split[1]) || !ft_isnumber(split[2]),
+			 "Invalid room coordinates");
+	vertex->x = ft_atoi(split[1]);
+	vertex->y = ft_atoi(split[2]);
+	ft_strdel(&split[1]);
+	ft_strdel(&split[2]);
+	ft_memdel((void **)&split);
+}
