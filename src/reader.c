@@ -13,6 +13,15 @@
 #include "lemin.h"
 #include <stdio.h>
 
+void	ft_printline(t_list *lst)
+{
+	size_t  len;
+
+	len = ft_strlen(lst->content);
+	ft_memset(lst->content + len, '\n', 1);
+	write(1, lst->content, len + 1);
+}
+
 static int	ft_vertexcmp(void const *vertex1, void const *vertex2)
 {
 	t_vertex const *v1;
@@ -48,6 +57,8 @@ int ft_fillgraph(t_graph *graph, int fd, char **str, t_list **map)
 	label = 0;
 	while ((get_next_line(fd, str) > 0) && !(ft_islink(*str)))
 	{
+		ft_lstappend(map, ft_lstnew(*str, 0));
+		*map = (*map)->next;
 		vertex = (t_vertex){.name = NULL, .x = 0, .y = 0, .status = 0,
 							.link = NULL, .root = NULL};
 		if (ft_iscomment(*str))
@@ -62,9 +73,6 @@ int ft_fillgraph(t_graph *graph, int fd, char **str, t_list **map)
 				ft_setlabel(graph, graph->head->content, label);
 			label = 0;
 		}
-		ft_lstappend(map, ft_lstnew(*str, 0));
-		*map = (*map)->next;
-		printf("[%zu|%s]", (*map)->content_size, (*map)->content);
 	}
 	return (0);
 }
@@ -81,19 +89,13 @@ int ft_linkgraph(t_graph *graph, int fd, char **str, t_list **map)
 			delim = ft_strchr(*str, '-');
 			*delim = '\0';
 			ft_error(!ft_linkvertex(graph, *str, delim + 1), "ft_linkvertex");
+			*delim = '-';
 		}
 		ft_lstappend(map, ft_lstnew(*str, 0));
 		*map = (*map)->next;
-		printf("[%zu|%s]", (*map)->content_size, (*map)->content);
 		get_next_line(fd, str);
 	}
 	return (0);
-}
-
-void	ft_printline(t_list *lst)
-{
-	write(1, lst->content, ft_strlen(lst->content));
-	write(1, "\n", 1);
 }
 
 int		ft_readfile(int fd, t_graph *graph, int *ants)
@@ -113,9 +115,8 @@ int		ft_readfile(int fd, t_graph *graph, int *ants)
 	ft_error((graph->head == NULL), "Empty graph");
 	ft_error((graph->start == NULL), "Start label doesn't exist");
 	ft_error((graph->end == NULL), "End label doesn't exist");
-	ft_error((ft_bfs(graph) == NULL), "Link between start and end doesn't exist");
+//	ft_error((ft_bfs(graph) == NULL), "Link between start and end doesn't exist");
 	ft_strdel(&str);
-	ft_printf("reading done\n");
 	ft_lstiter(head, ft_printline);
 	ft_lstdel(&head, ft_lstrm);
 	return (0);

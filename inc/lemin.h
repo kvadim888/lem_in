@@ -59,8 +59,8 @@ int						ft_readfile(int fd, t_graph *graph, int *ants);
 
 void					ft_addflow(t_list *link);
 
-t_list					*ft_bfs(t_graph *graph);
-void					ft_edkarp(t_graph *graph);
+t_list					*ft_bfs(t_graph *graph, int (*cond)(t_vertex *));
+void					ft_solver(t_graph *graph, int ants);
 
 int						ft_label(char *str);
 int						ft_isnumber(char *num);

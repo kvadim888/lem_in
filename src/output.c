@@ -59,6 +59,7 @@ void		ft_lemin(t_graph *graph, int num)
 {
 	t_list	*ants;
 	t_list	*tmp;
+	int		i = 0;
 
 	ants = NULL;
 	while (num > 0)
@@ -72,6 +73,8 @@ void		ft_lemin(t_graph *graph, int num)
 			tmp = tmp->next;
 		}
 		ft_printf("|\n");
+		i++;
 	}
 	ft_lstdel(&ants, ft_lstrm);
+	ft_printf("steps = %d\n", i);
 }
