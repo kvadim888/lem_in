@@ -12,6 +12,15 @@
 
 #include "lemin.h"
 
+void	ft_showpath(t_list *lst)
+{
+	t_vertex	*vertex;
+
+	vertex = (t_vertex *)lst->content;
+	if (vertex)
+		ft_printf("[%s]", vertex->name);
+}
+
 int		main(int ac, char **av)
 {
 	int			fd;
@@ -22,11 +31,12 @@ int		main(int ac, char **av)
 	fd = open(av[ac - 1], O_RDONLY);
 	ft_error((fd < 0), "Can not open file");
 	ft_readfile(fd, &graph, &ants);
-	ft_printf("Map was readed\n");
-	ft_lstiter(graph.head, ft_vertexshow);
-	ft_edkarp(&graph);
-	ft_lstiter(graph.head, ft_vertexshow);
-	ft_lemin(&graph,ants);
+//	ft_lstiter(graph.head, ft_vertexshow);
+//	t_list *path = ft_bfs(&graph);
+//	ft_lstiter(path, ft_showpath);
+//	ft_lstiter(graph.head, ft_vertexshow);
+	ft_solver(&graph, ants);
+	ft_lemin(&graph, ants);
 //	system("leaks lem-in");
 	return (0);
 }

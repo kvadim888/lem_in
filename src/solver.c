@@ -72,15 +72,22 @@ void		ft_bfsreset(t_list *vertex)
 	}
 }
 
-void		ft_edkarp(t_graph *graph)
+int				ft_default(t_vertex *vertex)
 {
-	t_list		*path;
+	return (vertex->status == 0);
+}
 
-	while ((path = ft_bfs(graph)) != NULL)
+
+
+void ft_solver(t_graph *graph, int ants)
+{
+	t_list		*bfs;
+
+	while ((bfs = ft_bfs(graph, ft_default)) != NULL)
 	{
-		ft_lstiter(path, ft_addflow);
+		ft_lstiter(bfs, ft_addflow);
 		ft_lstiter(graph->head, ft_bfsreset);
-        ft_lstdel(&path, ft_lstrm);
+        ft_lstdel(&bfs, ft_lstrm);
 	}
 	ft_lstiter(graph->head, ft_linkreduce);
 }

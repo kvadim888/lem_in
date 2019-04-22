@@ -59,7 +59,7 @@ static t_list	*ft_shortestpath(t_graph *graph)
 	return (path);
 }
 
-t_list			*ft_bfs(t_graph *graph)
+t_list			*ft_bfs(t_graph *graph, int (*cond)(t_vertex *))
 {
 	t_list		*queue;
 	t_route		*tmp;
@@ -69,8 +69,11 @@ t_list			*ft_bfs(t_graph *graph)
 	while (queue)
 	{
 		tmp = (t_route *)queue->content;
-		if (tmp->vertex->status == 0)
+		if (cond(tmp->vertex))
+		{
+			tmp->vertex->status = 1;
 			ft_lstappend(&queue, ft_linkdup(tmp->vertex));
+		}
 		if (tmp->vertex == graph->end)
 			break ;
 		queue = ft_dequeue(queue);
