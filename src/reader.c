@@ -22,7 +22,7 @@ void	ft_printline(t_list *lst)
 	write(1, lst->content, len + 1);
 }
 
-static int	ft_vertexcmp(void const *vertex1, void const *vertex2)
+static int		ft_vertexcmp(void const *vertex1, void const *vertex2)
 {
 	t_vertex const *v1;
 	t_vertex const *v2;
@@ -115,7 +115,7 @@ int		ft_readfile(int fd, t_graph *graph, int *ants)
 	ft_error((graph->head == NULL), "Empty graph");
 	ft_error((graph->start == NULL), "Start label doesn't exist");
 	ft_error((graph->end == NULL), "End label doesn't exist");
-//	ft_error((ft_bfs(graph) == NULL), "Link between start and end doesn't exist");
+	ft_error((ft_bfs(graph) == NULL), "Link between start and end doesn't exist");
 	ft_strdel(&str);
 	ft_lstiter(head, ft_printline);
 	ft_lstdel(&head, ft_lstrm);

@@ -59,20 +59,23 @@ static t_list	*ft_shortestpath(t_graph *graph)
 	return (path);
 }
 
-t_list			*ft_bfs(t_graph *graph, int (*cond)(t_vertex *))
+t_list			*ft_bfs(t_graph *graph)
 {
 	t_list		*queue;
+	t_list		*tail;
 	t_route		*tmp;
 
 	queue = NULL;
 	ft_lstappend(&queue, ft_linkdup(graph->start));
+	tail = ft_lsttail(queue);
 	while (queue)
 	{
 		tmp = (t_route *)queue->content;
-		if (cond(tmp->vertex))
+		if (tmp->vertex->status == 0)
 		{
 			tmp->vertex->status = 1;
-			ft_lstappend(&queue, ft_linkdup(tmp->vertex));
+			ft_lstappend(&tail, ft_linkdup(tmp->vertex));
+			tail = ft_lsttail(tail);
 		}
 		if (tmp->vertex == graph->end)
 			break ;
@@ -81,4 +84,13 @@ t_list			*ft_bfs(t_graph *graph, int (*cond)(t_vertex *))
 	graph->start->root = NULL;
 	ft_lstdel(&queue, ft_lstrm);
 	return (ft_shortestpath(graph));
+}
+
+void			ft_bfsreset(t_list *vertex)
+{
+	if (vertex)
+	{
+		((t_vertex *)vertex->content)->status = 0;
+		((t_vertex *)vertex->content)->root = NULL;
+	}
 }

@@ -15,85 +15,98 @@
 
 # include "libft.h"
 
-typedef struct			s_vertex
+typedef struct		s_vertex
 {
-	char				*name;
-	int					status;
-	int					x;
-	int					y;
-	t_list				*link;
-	struct s_vertex		*root;
-}						t_vertex;
+	char			*name;
+	int				status;
+	int				x;
+	int				y;
+	t_list			*link;
+	struct s_vertex	*root;
+}					t_vertex;
 
-typedef	struct			s_graph
+typedef	struct		s_graph
 {
-	t_list				*head;
-	t_vertex			*start;
-	t_vertex			*end;
-}						t_graph;
+	t_list			*head;
+	t_vertex		*start;
+	t_vertex		*end;
+}					t_graph;
 
-typedef struct			s_route
+typedef struct		s_route
 {
-	struct s_vertex		*vertex;
-	int					flow;
-}						t_route;
+	struct s_vertex	*vertex;
+	int				flow;
+}					t_route;
 
-typedef struct			s_ant
+typedef struct		s_ant
 {
-	struct s_vertex		*vertex;
-	int					number;
-}						t_ant;
-
-void					ft_error(int trigger, char const *msg);
-void					ft_warning(int trigger, char const *msg);
-
-t_list					*ft_newvertex(char *name, int x, int y);
-int						ft_linkvertex(t_graph *graph, char *name1, char *name2);
-int						ft_newlink(t_vertex *v1, t_vertex *v2);
+	struct s_list	*room;
+	int				number;
+}					t_ant;
 
 
-void					ft_resetgraph(t_graph *graph, int reset_links);
-int ft_fillgraph(t_graph *graph, int fd, char **str, t_list **map);
-int ft_linkgraph(t_graph *graph, int fd, char **str, t_list **map);
-int						ft_readfile(int fd, t_graph *graph, int *ants);
+typedef struct		s_solving
+{
+	size_t			maxlen;
+	t_list			*path;
+	int				branches;
+	int				steps;
+}					t_solving;
 
-void					ft_addflow(t_list *link);
+void				ft_error(int trigger, char const *msg);
+void				ft_warning(int trigger, char const *msg);
 
-t_list					*ft_bfs(t_graph *graph, int (*cond)(t_vertex *));
-void					ft_solver(t_graph *graph, int ants);
+int					ft_linkvertex(t_graph *graph, char *name1, char *name2);
+int					ft_newlink(t_vertex *v1, t_vertex *v2);
 
-int						ft_label(char *str);
-int						ft_isnumber(char *num);
-int						ft_islink(char *str);
-
-void					ft_readvertex(char *str, t_vertex *vertex);
-
-void					ft_delpath(t_list **path);
-
-void					ft_lemin(t_graph *graph, int num);
-
-void					ft_addflow(t_list *link);
-t_list					*ft_cutlink(t_list *link);
-void 					ft_linkreduce(t_list *lst);
-t_list					*ft_cutvertex(t_graph *graph, t_list *vertex);
-void 					ft_graphreduce(t_graph *graph);
-void					ft_vertexshow(t_list *lst);
-
-
-void					ft_bfsreset(t_list *vertex);
-void					ft_linkreset(t_list *link);
-void					ft_edkarpreset(t_list *vertex);
+int					ft_readfile(int fd, t_graph *graph, int *ants);
 
 /*
- *  TO DELETE -- additional functions for convenience
+** flow_calculation.c
+*/
+
+void				ft_addflow(t_list *link);
+
+/*
+** bfsearch.c
+*/
+
+t_list				*ft_bfs(t_graph *graph);
+void				ft_bfsreset(t_list *vertex);
+
+/*
+** validator.c
+*/
+
+int					ft_label(char *str);
+int					ft_isnumber(char *num);
+int					ft_islink(char *str);
+
+/*
+**	reader.c
+*/
+
+void				ft_readvertex(char *str, t_vertex *vertex);
+
+void				ft_lemin(t_graph *graph, t_list *path, int num);
+
+
+/*
+ *  solver.c
+ */
+void		ft_addflow(t_list *link);
+void		ft_bfsreset(t_list *vertex);
+t_solving	*ft_newsolving(t_graph *graph, int ants);
+int			ft_simulate(t_graph *graph);
+t_list		*ft_solver(t_graph *graph, int ants);
+
+
+/*
+ *  TODELETE -- additional functions for convenience
  */
 
-int						ft_graphshow(t_graph *graph);
-int						ft_queueshow(t_list *queue);
-t_list					*ft_pathsplit(t_list *path);
-int						ft_antshow(t_list *ants);
-
-void					ft_linkshow(t_list *lst);
-void					ft_pathshow(t_list *lst);
+void				ft_vertexshow(t_list *lst);
+void				ft_linkshow(t_list *lst);
+void				ft_pathshow(t_list *lst);
 
 #endif

@@ -22,28 +22,13 @@
 # define CYAN  "\x1B[36m"
 # define WHITE  "\x1B[37m"
 
-int		ft_graphshow(t_graph *graph)
-{
-	if (graph->head)
-	{
-		ft_lstiter(graph->head, ft_vertexshow);
-		return (1);
-	}
-	return (0);
-}
-
 void	ft_vertexshow(t_list *lst)
 {
 	t_vertex	*vertex;
 
 	vertex = lst->content;
-//	if (graph->start == vertex)
-//		printf("%sstart->%s", RED, NORM);
-//	if (graph->end == vertex)
-//		printf("%send->%s", RED, NORM);
 	printf("%s(%d)%s[%s]%s[%s]%s:",
-		   CYAN, vertex->status,
-		   BLUE, vertex->name,
+		   CYAN, vertex->status, BLUE, vertex->name,
 		   GREEN, (vertex->root) ? vertex->root->name : NULL, NORM);
 	fflush(stdout);
 	if (vertex->link)
