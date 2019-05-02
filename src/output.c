@@ -24,53 +24,52 @@ static t_list	*ft_ants(int num)
 
 static void		ft_printstep(t_list *lst, t_graph *graph)
 {
-	static char	delim = '\0';
+	char		delim;
 	t_ant		*ant;
 
 	ant = lst->content;
 	if (ant && (ant->room->content != NULL) &&
 		(ant->room->content != graph->start))
 	{
-		ft_printf("L%d-%s%c", ant->number,
+		delim = (lst->next) ? ' ' : '\0';
+		ft_printf("L%d-%s ", ant->number,
 				((t_vertex *)ant->room->content)->name, delim);
-		delim = ' ';
 	}
-	delim = (lst->next) ? delim : 0;
 }
 
-static void		ft_moveant(t_list *antlist, t_list **path)
+static void		ft_moveant(t_ant **ant, t_list **path)
 {
-	t_ant	*ant;
 	t_list	*next_room;
 
-	ant = antlist->content;
-	if (ant->room == NULL)
+	/* put ants in start room*/
+	if ((*ant)->room == NULL)
 	{
-		ant->room = (*path)->content;
+		(*ant)->room = (*path)->content;
 		*path = (*path)->next;
 	}
+	/* continue ants moving */
 	else
 	{
-		next_room = ant->room->next;
+		next_room = (*ant)->room->next;
 		if (next_room == NULL)
-			ft_memdel((void **)&antlist->content);
-		else if (next_room->next == NULL ||
-				 ((t_vertex *)next_room->content)->status < 1)
+			ft_memdel((void **)ant);
+		else if (next_room->next == NULL || /* end room */
+				 ((t_vertex *)next_room->content)->status < 1) /* mid room */
 		{
-			antlist->content = next_room;
+			(*ant)->room = next_room;
 			((t_vertex *)next_room->content)->status++;
 		}
 	}
 }
 
-static int		ft_step(t_list *path, t_list *antlist)
+static int		ft_step(t_list **path, t_list *antlist)
 {
 	if (!antlist)
 		return (0);
 	while (antlist)
 	{
 		if (antlist->content)
-			ft_moveant(antlist, &path);
+			ft_moveant((t_ant **)&(antlist->content), path);
 		antlist = antlist->next;
 	}
 	return (1);
@@ -78,21 +77,22 @@ static int		ft_step(t_list *path, t_list *antlist)
 
 void			ft_lemin(t_graph *graph, t_list *path, int num)
 {
-	t_list	*ants;
+	t_list	*antlist;
 	t_list	*tmp;
 	int		steps = 0;
 
-	ants = ft_ants(num);
-	while (ft_step(path, ants))
+	antlist = ft_ants(num);
+	while (ft_step(&path, antlist))
 	{
-		tmp = ants;
+		tmp = antlist;
 		while (tmp)
 		{
+			ft_printf("new step\n");
 			ft_printstep(tmp, graph);
 			tmp = tmp->next;
 		}
 		steps++;
 	}
-	ft_lstdel(&ants, ft_lstrm);
+	ft_lstdel(&antlist, ft_lstrm);
 	ft_printf("steps = %d\n", steps);
 }

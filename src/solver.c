@@ -63,21 +63,30 @@ t_list	*ft_solver(t_graph *graph, int ants)
 	solving = NULL;
 	while ((bfs = ft_bfs(graph)) != NULL) // bfsearch
 	{
+		ft_printf("ft_addflow\n");
 		ft_lstiter(bfs, ft_addflow); // flow_calculation
 		ft_lstiter(graph->head, ft_vertexshow); //todo delete line
 		if (ft_simulate(graph))
 		{
+			ft_printf("simulation done\n");
 			solving = ft_newsolving(graph, ants);
+			ft_printf("new[steps:%d,branches:%d,maxlen:%zu]\n",
+					solving->steps, solving->branches, solving->maxlen);
 			if (solving->steps == 0)
 				break ;
 			ft_lstadd(&routes, ft_lstnew(solving, 0));
+			ft_printf("ft_lstnew(solving, 0)\n");
 		}
 		ft_lstdel(&bfs, ft_lstrm);
+		ft_printf("ft_lstrm\n");
 		ft_lstiter(graph->head, ft_bfsreset);
+		ft_printf("ft_bfsreset\n");
 	}
+	ft_printf("edkarp done\n");
 	solving = (routes) ? ft_optimal(routes) : solving;
 	routes = (solving) ? solving->path : NULL;
 	ft_memdel((void **)&solving);
 	ft_lsttail(routes)->next = routes; // make cyclic list
+	ft_printf("ft_solver done\n");
 	return (routes);
 }

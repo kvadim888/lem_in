@@ -27,10 +27,12 @@ static t_list	*ft_newbranch(t_vertex *vertex)
 	flow = 1;
 	branch = ft_lstnew(vertex, 0);
 	tail = branch;
-	while ((lst = ft_lstfind(vertex->link, &flow, ft_flowcmp)) != NULL)
+	lst = vertex->link;
+	while ((lst = ft_lstfind(lst, &flow, ft_flowcmp)) != NULL)
 	{
 		ft_lstappend(&tail, ft_lstnew(((t_route *)lst->content)->vertex, 0));
 		tail = tail->next;
+		lst = lst->next;
 	}
 	return (branch);
 }
@@ -48,8 +50,8 @@ static t_list	*ft_newpath(t_graph *graph)
 		if (((t_route *)link->content)->flow == 1)
 		{
 			branch = ft_newbranch(((t_route *)link->content)->vertex);
-			ft_lstadd(&branch, &(t_list){graph->start, 0, NULL});
-			ft_lstadd(&path, &(t_list){branch, 0, NULL});
+			ft_lstadd(&branch, ft_lstnew(graph->start, 0));
+			ft_lstadd(&path, ft_lstnew(branch, 0));
 		}
 		link = link->next;
 	}
@@ -63,13 +65,16 @@ t_solving		*ft_newsolving(t_graph *graph, int ants)
 	size_t		len;
 
 	solving = ft_memalloc(sizeof(t_solving));
+	ft_printf("ft_newpath = ");
 	path = ft_newpath(graph);
+	ft_printf("done\n");
 	solving->path = path;
 	solving->maxlen = 0;
 	solving->branches = 0;
+	ft_printf("branches=%zu\n", ft_lstlen(solving->path));
 	while (path)
 	{
-		len = ft_lstlen(path->content) - 1;
+		len = ft_lstlen(path->content);
 		if ((len == 0) || (solving->maxlen < len))
 			solving->maxlen = len;
 		solving->branches++;
