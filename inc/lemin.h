@@ -108,5 +108,6 @@ t_list		*ft_solver(t_graph *graph, int ants);
 void				ft_vertexshow(t_list *lst);
 void				ft_linkshow(t_list *lst);
 void				ft_pathshow(t_list *lst);
+void				ft_antshow(t_list *lst);
 
 #endif

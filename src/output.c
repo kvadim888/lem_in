@@ -22,77 +22,86 @@ static t_list	*ft_ants(int num)
 	return (ants);
 }
 
-static void		ft_printstep(t_list *lst, t_graph *graph)
+static void		ft_printstep(t_list *lst)
 {
 	char		delim;
 	t_ant		*ant;
 
+	if (!lst->content)
+		return;
 	ant = lst->content;
-	if (ant && (ant->room->content != NULL) &&
-		(ant->room->content != graph->start))
+	if (ant->room)
 	{
 		delim = (lst->next) ? ' ' : '\0';
-		ft_printf("L%d-%s ", ant->number,
-				((t_vertex *)ant->room->content)->name, delim);
+		if (ant->room->content)
+			ft_printf("L%d-%s ", ant->number,
+					 ((t_vertex *)ant->room->content)->name, delim);
 	}
 }
 
-static void		ft_moveant(t_ant **ant, t_list **path)
+//todo refactor to one case
+static int		ft_moveant(t_ant *ant, t_list **path)
 {
 	t_list	*next_room;
+	t_list	*start;
 
-	/* put ants in start room*/
-	if ((*ant)->room == NULL)
+	if (ant->room == NULL)
 	{
-		(*ant)->room = (*path)->content;
-		*path = (*path)->next;
-	}
-	/* continue ants moving */
-	else
-	{
-		next_room = (*ant)->room->next;
-		if (next_room == NULL)
-			ft_memdel((void **)ant);
-		else if (next_room->next == NULL || /* end room */
-				 ((t_vertex *)next_room->content)->status < 1) /* mid room */
+		start = (*path)->content;
+		if (((t_vertex *)start->content)->status < 1)
 		{
-			(*ant)->room = next_room;
-			((t_vertex *)next_room->content)->status++;
+			ant->room = (*path)->content;
+			((t_vertex *)ant->room->content)->status++; /* enter the next room */
+			*path = (*path)->next;
 		}
+		return (1);
 	}
+	if (ant->room->next == NULL)
+		return (0);
+	next_room = ant->room->next;
+	if ((next_room->next == NULL) || /* end room */
+		  (((t_vertex *)next_room->content)->status < 1)) /* mid room */
+	{
+		((t_vertex *)ant->room->content)->status--; /* leave the room */
+		ant->room = next_room;
+		((t_vertex *)ant->room->content)->status++; /* enter the next room */
+	}
+	return (1);
 }
 
 static int		ft_step(t_list **path, t_list *antlist)
 {
-	if (!antlist)
-		return (0);
+	int		finish;
+
+	finish = 1;
 	while (antlist)
 	{
 		if (antlist->content)
-			ft_moveant((t_ant **)&(antlist->content), path);
+		{
+			if (!ft_moveant(antlist->content, path))
+			{
+				ft_lstrm(antlist->content, antlist->content_size);
+				antlist->content = NULL;
+				antlist->content_size = 0;
+			}
+			finish = 0;
+		}
 		antlist = antlist->next;
 	}
-	return (1);
+	return (finish);
 }
 
 void			ft_lemin(t_graph *graph, t_list *path, int num)
 {
 	t_list	*antlist;
-	t_list	*tmp;
-	int		steps = 0;
+	int		steps = 0;//todo delete variable
 
 	antlist = ft_ants(num);
-	while (ft_step(&path, antlist))
+	while (!ft_step(&path, antlist))
 	{
-		tmp = antlist;
-		while (tmp)
-		{
-			ft_printf("new step\n");
-			ft_printstep(tmp, graph);
-			tmp = tmp->next;
-		}
+		ft_lstiter(antlist, ft_printstep);
+		ft_printf("\n");
 		steps++;
 	}
 	ft_lstdel(&antlist, ft_lstrm);
-	ft_printf("steps = %d\n", steps);
 }

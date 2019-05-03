@@ -53,9 +53,21 @@ void	ft_linkshow(t_list *lst)
 void	ft_pathshow(t_list *lst)
 {
 	if (lst->content)
-		ft_printf("[%s]", ((t_vertex *)lst->content)->name);
+		ft_printf("[%s; %d]", ((t_vertex *)lst->content)->name, ((t_vertex *)lst->content)->status);
 	if (lst->next)
 		ft_printf("->");
 	else
 		printf("\n");
+}
+
+void	ft_antshow(t_list *lst)
+{
+	t_ant	*ant;
+	char	*room;
+
+	ant = lst->content;
+	if (!ant)
+		return;
+	room = ((ant->room) && ant->room->content) ? ((t_vertex*)ant->room->content)->name : "[none]";
+	ft_printf("ant[#%d]:[%s] ", ant->number, room);
 }
