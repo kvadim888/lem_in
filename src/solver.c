@@ -69,16 +69,16 @@ t_list				*ft_solver(t_graph *graph, int ants)
 		ft_printf("new bfs (len = %zu): ", ft_lstlen(bfs)); //todo delete line
 		ft_lstiter(bfs, ft_pathshow); //todo delete line
 		ft_lstiter(bfs, ft_addflow);
-		ft_lstiter(graph->head, ft_bfsreset); // reset
+		ft_lstdel(&bfs, ft_lstrm);
+		ft_lstiter(graph->head, ft_bfsreset); // reset after bfs
 		if (ft_simulate(graph))
 		{
 			solving = ft_newsolving(graph, ants);
-			if (solving->steps == 0)
+			if (solving->maxlen == 1)
 				break ;
 			ft_lstadd(&routes, ft_lstnew(solving, 0));
 		}
 		ft_lstiter(graph->head, ft_bfsreset); // reset after simulation
-		ft_lstdel(&bfs, ft_lstrm);
 	}
 	solving = (routes) ? ft_optimal(routes) : solving;
 	routes = (solving) ? solving->path : NULL;

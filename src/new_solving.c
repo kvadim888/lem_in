@@ -78,5 +78,6 @@ t_solving		*ft_newsolving(t_graph *graph, int ants)
 		path = path->next;
 	}
 	solving->steps = solving->maxlen + ants / solving->branches;
+	ft_printf("solving->maxlen = %d\n", solving->maxlen);
 	return (solving);
 }
