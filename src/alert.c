@@ -17,12 +17,16 @@ void	ft_error(int trigger, char const *msg)
 	if (trigger)
 	{
 		ft_dprintf(2, "ERROR: %s\n", msg);
-		exit(0);
+		system("leaks lem-in"); //todo delete after leak checking
+		exit(1);
 	}
 }
 
 void	ft_warning(int trigger, char const *msg)
 {
 	if (trigger)
+	{
 		ft_dprintf(2, "WARNING: %s\n", msg);
+		system("leaks lem-in"); //todo delete after leak checking
+	}
 }

@@ -26,6 +26,6 @@ int		main(int ac, char **av)
 	path = ft_solver(&graph, ants);
 	ft_lstiter(graph.head, ft_bfsreset);
 	ft_lemin(path, ants);
-	system("leaks lem-in");
+	system("leaks lem-in"); //todo delete after leak checking
 	return (0);
 }

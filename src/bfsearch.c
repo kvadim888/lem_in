@@ -88,7 +88,7 @@ t_list			*ft_bfs(t_graph *graph)
 
 void			ft_bfsreset(t_list *vertex)
 {
-	if (vertex)
+	if (vertex->content)
 	{
 		((t_vertex *)vertex->content)->status = 0;
 		((t_vertex *)vertex->content)->root = NULL;

@@ -52,7 +52,7 @@ int			ft_fillgraph(t_graph *graph, int fd, char **str, t_list **map)
 		{
 			ft_readvertex(*str, &vertex);
 			ft_error((ft_lstfind(graph->head, &vertex, ft_vertexcmp) != NULL),
-					 "Vertex is not unique");
+					 ERR_DVERT);
 			ft_lstadd(&(graph->head), ft_lstnew(&vertex, sizeof(t_vertex)));
 			if (label)
 				ft_setlabel(graph, graph->head->content, label);
@@ -70,10 +70,10 @@ int			ft_linkgraph(t_graph *graph, int fd, char **str, t_list **map)
 	{
 		if (!ft_iscomment(*str))
 		{
-			ft_error(!ft_islink(*str), "Invalid links");
+			ft_error(!ft_islink(*str), ERR_FLINK);
 			delim = ft_strchr(*str, '-');
 			*delim = '\0';
-			ft_error(!ft_linkvertex(graph, *str, delim + 1), "Invalid links");
+			ft_error(!ft_linkvertex(graph, *str, delim + 1), ERR_FLINK);
 			*delim = '-';
 		}
 		ft_lstappend(map, ft_lstnew(*str, 0));
@@ -90,18 +90,18 @@ int			ft_readfile(int fd, t_graph *graph, int *ants)
 	t_list	*lst;
 
 	head = NULL;
-	ft_error((get_next_line(fd, &str) < 0), "File reading error");
+	while (get_next_line(fd, &str) >= 0 && ft_iscomment(str))
+		ft_lstappend(&head, ft_lstnew(str, 0));
 	*ants = ft_atoi(str);
-	ft_error(!ft_isnumber(str) || *ants <= 0, "Invalid amount of ants");
+	ft_error(!ft_isnumber(str) || *ants <= 0, ERR_ANTS);
 	ft_lstappend(&head, ft_lstnew(str, 0));
 	lst = head;
-	ft_error(ft_fillgraph(graph, fd, &str, &lst), "Unable to fill graph");
-	ft_error(ft_linkgraph(graph, fd, &str, &lst), "Unable to link graph");
-	ft_error((graph->head == NULL), "Empty graph");
-	ft_error((graph->start == NULL), "Start label doesn't exist");
-	ft_error((graph->end == NULL), "End label doesn't exist");
-	lst = ft_bfs(graph);
-	ft_error((lst == NULL), "Link between start and end doesn't exist");
+	ft_error(ft_fillgraph(graph, fd, &str, &lst), ERR_UNFILL);
+	ft_error(ft_linkgraph(graph, fd, &str, &lst), ERR_UNLINK);
+	ft_error((graph->head == NULL), ERR_EMPTY);
+	ft_error((graph->start == NULL), ERR_START);
+	ft_error((graph->end == NULL), ERR_END);
+	ft_error((lst = ft_bfs(graph)) == NULL, ERR_NOWAY);
 	ft_lstdel(&lst, ft_lstrm);
 	ft_strdel(&str);
 	ft_lstiter(head, ft_printline);

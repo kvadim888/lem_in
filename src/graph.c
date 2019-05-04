@@ -28,9 +28,8 @@ int			ft_linkvertex(t_graph *graph, char *name1, char *name2)
 	t_list	*v2;
 
 	v1 = ft_lstfind(graph->head, name1, ft_namecmp);
-	ft_error((v1 == NULL), "Unknown links");
 	v2 = ft_lstfind(graph->head, name2, ft_namecmp);
-	ft_error((v2 == NULL), "Unknown links");
+	ft_error((v1 == NULL) || (v2 == NULL), ERR_LINK);
 	return (ft_newlink(v1->content, v2->content) &&
 			ft_newlink(v2->content, v1->content));
 }
@@ -52,10 +51,7 @@ int			ft_newlink(t_vertex *v1, t_vertex *v2)
 	route.vertex = v2;
 	route.flow = 0;
 	if (ft_lstfind(v1->link, &route, ft_routecmp))
-	{
-		ft_warning(1, "route already exists");
 		return (0);
-	}
 	ft_lstadd(&(v1->link), ft_lstnew(&route, sizeof(route)));
 	return (1);
 }

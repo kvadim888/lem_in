@@ -15,6 +15,19 @@
 
 # include "libft.h"
 
+# define ERR_ANTS	"Incorrect ants amount"
+# define ERR_READ	"File can not be read"
+# define ERR_FROOM	"Incorrect room format"
+# define ERR_FLINK	"Incorrect link format"
+# define ERR_DVERT	"Duplicate vertices are exist"
+# define ERR_LINK	"Links does not belong to existing vertices"
+# define ERR_UNFILL	"Unable to fill the graph"
+# define ERR_UNLINK	"Unable to link the graph"
+# define ERR_EMPTY	"The graph is empty"
+# define ERR_START	"The start label does not exist"
+# define ERR_END	"The end label does not exist"
+# define ERR_NOWAY	"There is no path from start to end"
+
 typedef struct		s_vertex
 {
 	char			*name;

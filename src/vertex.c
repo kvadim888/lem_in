@@ -24,10 +24,9 @@ void		ft_readvertex(char *str, t_vertex *vertex)
 
 	ft_striter(str, ft_space);
 	split = ft_strsplit(str, ' ');
-	ft_error((ft_strsplitlen(split) != 3), "split != 3");
+	ft_error((ft_strsplitlen(split) != 3)
+			|| !ft_isnumber(split[1]) || !ft_isnumber(split[2]), ERR_FROOM);
 	vertex->name = split[0];
-	ft_error(!ft_isnumber(split[1]) || !ft_isnumber(split[2]),
-			 "Invalid room coordinates");
 	vertex->x = ft_atoi(split[1]);
 	vertex->y = ft_atoi(split[2]);
 	ft_strdel(&split[1]);
