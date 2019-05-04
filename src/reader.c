@@ -98,6 +98,12 @@ int ft_linkgraph(t_graph *graph, int fd, char **str, t_list **map)
 	return (0);
 }
 
+static void 	ft_rmline(void *content, size_t content_size)
+{
+	free(content);
+	content_size = 0;
+}
+
 int		ft_readfile(int fd, t_graph *graph, int *ants)
 {
 	char	*str;
@@ -115,10 +121,12 @@ int		ft_readfile(int fd, t_graph *graph, int *ants)
 	ft_error((graph->head == NULL), "Empty graph");
 	ft_error((graph->start == NULL), "Start label doesn't exist");
 	ft_error((graph->end == NULL), "End label doesn't exist");
-	ft_error((ft_bfs(graph) == NULL), "Link between start and end doesn't exist");
+	lst = ft_bfs(graph);
+	ft_error((lst == NULL), "Link between start and end doesn't exist");
+	ft_lstdel(&lst, ft_lstrm);
 	ft_strdel(&str);
 	ft_lstiter(head, ft_printline);
-	ft_lstdel(&head, ft_lstrm);
+	ft_lstdel(&head, ft_rmline);
 	return (0);
 }
 

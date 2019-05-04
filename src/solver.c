@@ -24,9 +24,12 @@ static void			ft_rmbranch(void *content, size_t size)
 
 static void			ft_rmsolving(void *content, size_t size)
 {
-	if (content && size > 0)
+	t_list	*path;
+
+	if (content || size > 0)
 	{
-		ft_lstdel(&((t_solving *)content)->path, ft_rmbranch);
+		path = ((t_solving *)content)->path;
+		ft_lstdel(&path, ft_rmbranch);
 		free(content);
 	}
 }
@@ -61,10 +64,9 @@ t_list	*ft_solver(t_graph *graph, int ants)
 
 	routes = NULL;
 	solving = NULL;
-	while ((bfs = ft_bfs(graph)) != NULL) // bfsearch
+	while ((bfs = ft_bfs(graph)) != NULL)
 	{
-		ft_lstiter(bfs, ft_addflow); // flow_calculation
-		ft_lstiter(graph->head, ft_vertexshow); //todo delete line
+		ft_lstiter(bfs, ft_addflow);
 		if (ft_simulate(graph))
 		{
 			solving = ft_newsolving(graph, ants);
@@ -78,6 +80,6 @@ t_list	*ft_solver(t_graph *graph, int ants)
 	solving = (routes) ? ft_optimal(routes) : solving;
 	routes = (solving) ? solving->path : NULL;
 	ft_memdel((void **)&solving);
-	ft_lsttail(routes)->next = routes; // make cyclic list
+	ft_lsttail(routes)->next = routes;
 	return (routes);
 }

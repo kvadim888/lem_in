@@ -25,6 +25,5 @@ int		main(int ac, char **av)
 	ft_readfile(fd, &graph, &ants);
 	path = ft_solver(&graph, ants);
 	ft_lemin(&graph, path, ants);
-//	system("leaks lem-in");
 	return (0);
 }

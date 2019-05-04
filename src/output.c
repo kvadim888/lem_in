@@ -24,7 +24,7 @@ static t_list	*ft_ants(int num)
 
 static void		ft_printstep(t_list *lst)
 {
-	char		delim;
+	static char	delim = '\0';
 	t_ant		*ant;
 
 	if (!lst->content)
@@ -32,11 +32,15 @@ static void		ft_printstep(t_list *lst)
 	ant = lst->content;
 	if (ant->room)
 	{
-		delim = (lst->next) ? ' ' : '\0';
 		if (ant->room->content)
-			ft_printf("L%d-%s ", ant->number,
-					 ((t_vertex *)ant->room->content)->name, delim);
+		{
+			if (delim)
+				write(1, &delim, sizeof(char));
+			ft_printf("L%d-%s", ant->number,
+					  ((t_vertex *)ant->room->content)->name);
+		}
 	}
+	delim = (lst->next) ? ' ' : '\0';
 }
 
 //todo refactor to one case
@@ -94,14 +98,12 @@ static int		ft_step(t_list **path, t_list *antlist)
 void			ft_lemin(t_graph *graph, t_list *path, int num)
 {
 	t_list	*antlist;
-	int		steps = 0;//todo delete variable
 
 	antlist = ft_ants(num);
 	while (!ft_step(&path, antlist))
 	{
 		ft_lstiter(antlist, ft_printstep);
 		ft_printf("\n");
-		steps++;
 	}
 	ft_lstdel(&antlist, ft_lstrm);
 }
