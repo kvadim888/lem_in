@@ -24,6 +24,7 @@ int		main(int ac, char **av)
 	ft_error((fd < 0), "Can not open file");
 	ft_readfile(fd, &graph, &ants);
 	path = ft_solver(&graph, ants);
+	ft_lstiter(graph.head, ft_bfsreset);
 	ft_lemin(path, ants);
 	system("leaks lem-in");
 	return (0);

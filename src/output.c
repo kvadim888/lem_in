@@ -83,6 +83,7 @@ void		ft_lemin(t_list *path, int num)
 	ants = NULL;
 	while (num > 0)
 		ft_lstadd(&ants, ft_lstnew(&(t_ant){NULL, num--}, sizeof(t_ant)));
+	ft_lstiter(path->content, ft_pathshow);
 	while (!ft_step(&path, ants))
 	{
 		ft_lstiter(ants, ft_printstep);

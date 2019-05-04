@@ -92,7 +92,7 @@ int			ft_readfile(int fd, t_graph *graph, int *ants)
 	head = NULL;
 	ft_error((get_next_line(fd, &str) < 0), "File reading error");
 	*ants = ft_atoi(str);
-	ft_error(!ft_isnumber(str) || *ants < 0, "Invalid amount of ants");
+	ft_error(!ft_isnumber(str) || *ants <= 0, "Invalid amount of ants");
 	ft_lstappend(&head, ft_lstnew(str, 0));
 	lst = head;
 	ft_error(ft_fillgraph(graph, fd, &str, &lst), "Unable to fill graph");
