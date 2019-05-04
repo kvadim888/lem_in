@@ -34,7 +34,7 @@ static t_list	*ft_newbranch(t_vertex *vertex)
 		tail = tail->next;
 		lst = ((t_route *)lst->content)->vertex->link;
 	}
-	ft_lstiter(branch, ft_pathshow);
+	ft_printf("\x1B[31m branch: \x1B[0m"); ft_lstiter(branch, ft_pathshow);
 	return (branch);
 }
 
@@ -51,7 +51,6 @@ static t_list	*ft_newpath(t_graph *graph)
 		if (((t_route *)link->content)->flow == 1)
 		{
 			branch = ft_newbranch(((t_route *)link->content)->vertex);
-//			ft_lstadd(&branch, ft_lstnew(graph->start, 0));
 			ft_lstadd(&path, ft_lstnew(branch, 0));
 		}
 		link = link->next;

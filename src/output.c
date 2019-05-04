@@ -24,51 +24,35 @@ static t_list	*ft_ants(int num)
 
 static void		ft_printstep(t_list *lst)
 {
-	static char	delim = '\0';
 	t_ant		*ant;
 
 	if (!lst->content)
 		return;
 	ant = lst->content;
-	if (ant->room)
-	{
-		if (ant->room->content)
-		{
-			if (delim)
-				write(1, &delim, sizeof(char));
-			ft_printf("L%d-%s", ant->number,
-					  ((t_vertex *)ant->room->content)->name);
-		}
-	}
-	delim = (lst->next) ? ' ' : '\0';
+	if (!(ant->room && ant->room->content))
+		return ;
+	ft_printf("L%d-%s ", ant->number, ((t_vertex *)ant->room->content)->name);
 }
 
-//todo refactor to one case
 static int		ft_moveant(t_ant *ant, t_list **path)
 {
 	t_list	*next_room;
-	t_list	*start;
 
-	if (ant->room == NULL)
+	if (ant->room)
+		next_room = ant->room->next;
+	else
 	{
-		start = (*path)->content;
-		if (((t_vertex *)start->content)->status < 1)
-		{
-			ant->room = (*path)->content;
-			((t_vertex *)ant->room->content)->status++; /* enter the next room */
-			*path = (*path)->next;
-		}
-		return (1);
+		next_room = (*path)->content;
+		*path = (*path)->next;
 	}
-	if (ant->room->next == NULL)
+	if (!next_room)
 		return (0);
-	next_room = ant->room->next;
-	if ((next_room->next == NULL) || /* end room */
-		  (((t_vertex *)next_room->content)->status < 1)) /* mid room */
+	if (!(next_room->next) || ((t_vertex *)next_room->content)->status < 1)
 	{
-		((t_vertex *)ant->room->content)->status--; /* leave the room */
+		if (ant->room)
+			((t_vertex *)ant->room->content)->status--;
 		ant->room = next_room;
-		((t_vertex *)ant->room->content)->status++; /* enter the next room */
+		((t_vertex *)ant->room->content)->status++;
 	}
 	return (1);
 }
@@ -95,15 +79,15 @@ static int		ft_step(t_list **path, t_list *antlist)
 	return (finish);
 }
 
-void			ft_lemin(t_graph *graph, t_list *path, int num)
+void			ft_lemin(t_list *path, int num)
 {
-	t_list	*antlist;
+	t_list	*lstant;
 
-	antlist = ft_ants(num);
-	while (!ft_step(&path, antlist))
+	lstant = ft_ants(num);
+	while (!ft_step(&path, lstant))
 	{
-		ft_lstiter(antlist, ft_printstep);
-		ft_printf("\n");
+		ft_lstiter(lstant, ft_printstep);
+		ft_putchar('\n');
 	}
-	ft_lstdel(&antlist, ft_lstrm);
+	ft_lstdel(&lstant, ft_lstrm);
 }

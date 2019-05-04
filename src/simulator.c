@@ -17,7 +17,7 @@ static void		ft_add(t_list *link)
 	t_route		*route;
 
 	route = link->content;
-	route->vertex->status += route->flow;
+	route->vertex->status += (route->flow > 0) ? route->flow : 0;
 }
 
 static void		ft_letflow(t_list *lst)
@@ -32,9 +32,7 @@ int				ft_simulate(t_graph *graph)
 {
 	t_list		*lst;
 
-	ft_printf("simulate\n"); //todo delete line
 	ft_lstiter(graph->head, ft_letflow);
-	ft_lstiter(graph->head, ft_vertexshow); //todo delete line
 	lst = graph->head;
 	while (lst)
 	{

@@ -34,7 +34,7 @@ void	ft_vertexshow(t_list *lst)
 	if (vertex->link)
 		ft_lstiter(vertex->link, ft_linkshow);
 	else
-		printf("[null]\n");
+		ft_printf("[null]\n");
 }
 
 void	ft_linkshow(t_list *lst)
@@ -47,7 +47,7 @@ void	ft_linkshow(t_list *lst)
 		ft_printf("[%d|'%s']->", route->flow, route->vertex->name);
 	}
 	if (lst->next == NULL)
-		printf("[null]\n");
+		ft_printf("[null]\n");
 }
 
 void	ft_pathshow(t_list *lst)
@@ -57,7 +57,7 @@ void	ft_pathshow(t_list *lst)
 	if (lst->next)
 		ft_printf("->");
 	else
-		printf("\n");
+		ft_printf("\n");
 }
 
 void	ft_antshow(t_list *lst)

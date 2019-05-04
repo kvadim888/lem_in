@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "lemin.h"
-#include <stdio.h>
 
 void	ft_printline(t_list *lst)
 {
@@ -100,8 +99,8 @@ int ft_linkgraph(t_graph *graph, int fd, char **str, t_list **map)
 
 static void 	ft_rmline(void *content, size_t content_size)
 {
-	free(content);
-	content_size = 0;
+	if (content || content_size > 0)
+		free(content);
 }
 
 int		ft_readfile(int fd, t_graph *graph, int *ants)
@@ -112,8 +111,8 @@ int		ft_readfile(int fd, t_graph *graph, int *ants)
 
 	head = NULL;
 	ft_error((get_next_line(fd, &str) < 0), "File reading error");
-	ft_error(!ft_isnumber(str), "Invalid amount of ants");
 	*ants = ft_atoi(str);
+	ft_error(!ft_isnumber(str) || *ants < 0, "Invalid amount of ants");
 	ft_lstappend(&head, ft_lstnew(str, 0));
 	lst = head;
 	ft_error(ft_fillgraph(graph, fd, &str, &lst), "Unable to fill graph");
@@ -125,7 +124,7 @@ int		ft_readfile(int fd, t_graph *graph, int *ants)
 	ft_error((lst == NULL), "Link between start and end doesn't exist");
 	ft_lstdel(&lst, ft_lstrm);
 	ft_strdel(&str);
-	ft_lstiter(head, ft_printline);
+//	ft_lstiter(head, ft_printline); //todo uncomment
 	ft_lstdel(&head, ft_rmline);
 	return (0);
 }

@@ -24,6 +24,6 @@ int		main(int ac, char **av)
 	ft_error((fd < 0), "Can not open file");
 	ft_readfile(fd, &graph, &ants);
 	path = ft_solver(&graph, ants);
-	ft_lemin(&graph, path, ants);
+	ft_lemin(path, ants);
 	return (0);
 }
