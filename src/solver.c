@@ -56,7 +56,7 @@ static t_solving	*ft_optimal(t_list *routes)
 	return (solving);
 }
 
-t_list	*ft_solver(t_graph *graph, int ants)
+t_list				*ft_solver(t_graph *graph, int ants)
 {
 	t_solving	*solving;
 	t_list		*routes;
@@ -66,7 +66,8 @@ t_list	*ft_solver(t_graph *graph, int ants)
 	solving = NULL;
 	while ((bfs = ft_bfs(graph)) != NULL)
 	{
-		ft_printf("new bfs (len = %zu): ", ft_lstlen(bfs)); ft_lstiter(bfs, ft_pathshow); //todo delete line
+		ft_printf("new bfs (len = %zu): ", ft_lstlen(bfs)); //todo delete line
+		ft_lstiter(bfs, ft_pathshow); //todo delete line
 		ft_lstiter(bfs, ft_addflow);
 		ft_lstiter(graph->head, ft_bfsreset); // reset
 		if (ft_simulate(graph))
@@ -79,7 +80,6 @@ t_list	*ft_solver(t_graph *graph, int ants)
 		ft_lstiter(graph->head, ft_bfsreset); // reset after simulation
 		ft_lstdel(&bfs, ft_lstrm);
 	}
-	ft_lstiter(graph->head, ft_bfsreset);
 	solving = (routes) ? ft_optimal(routes) : solving;
 	routes = (solving) ? solving->path : NULL;
 	ft_memdel((void **)&solving);

@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   alert.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: vkryvono <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,19 +12,17 @@
 
 #include "lemin.h"
 
-int		main(int ac, char **av)
+void	ft_error(int trigger, char const *msg)
 {
-	int			fd;
-	int			ants;
-	t_graph		graph;
-	t_list		*path;
+	if (trigger)
+	{
+		ft_dprintf(2, "ERROR: %s\n", msg);
+		exit(0);
+	}
+}
 
-	graph = (t_graph){.head = NULL, .start = NULL, .end = NULL};
-	fd = open(av[ac - 1], O_RDONLY);
-	ft_error((fd < 0), "Can not open file");
-	ft_readfile(fd, &graph, &ants);
-	path = ft_solver(&graph, ants);
-	ft_lemin(path, ants);
-	system("leaks lem-in");
-	return (0);
+void	ft_warning(int trigger, char const *msg)
+{
+	if (trigger)
+		ft_dprintf(2, "WARNING: %s\n", msg);
 }

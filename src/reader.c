@@ -12,19 +12,10 @@
 
 #include "lemin.h"
 
-void	ft_printline(t_list *lst)
+static int	ft_vertexcmp(void const *vertex1, void const *vertex2)
 {
-	size_t  len;
-
-	len = ft_strlen(lst->content);
-	ft_memset(lst->content + len, '\n', 1);
-	write(1, lst->content, len + 1);
-}
-
-static int		ft_vertexcmp(void const *vertex1, void const *vertex2)
-{
-	t_vertex const *v1;
-	t_vertex const *v2;
+	t_vertex const	*v1;
+	t_vertex const	*v2;
 
 	v1 = vertex1;
 	v2 = vertex2;
@@ -43,12 +34,7 @@ void		ft_setlabel(t_graph *graph, t_vertex *vertex, int label)
 		graph->end = vertex;
 }
 
-int			ft_iscomment(char const *str)
-{
-	return ((str != NULL) && (*str == '#'));
-}
-
-int ft_fillgraph(t_graph *graph, int fd, char **str, t_list **map)
+int			ft_fillgraph(t_graph *graph, int fd, char **str, t_list **map)
 {
 	t_vertex	vertex;
 	int			label;
@@ -61,7 +47,7 @@ int ft_fillgraph(t_graph *graph, int fd, char **str, t_list **map)
 		vertex = (t_vertex){.name = NULL, .x = 0, .y = 0, .status = 0,
 							.link = NULL, .root = NULL};
 		if (ft_iscomment(*str))
-			label = (label == 0) ? ft_label(*str) : label;
+			label = (label == 0) ? ft_islabel(*str) : label;
 		else
 		{
 			ft_readvertex(*str, &vertex);
@@ -76,7 +62,7 @@ int ft_fillgraph(t_graph *graph, int fd, char **str, t_list **map)
 	return (0);
 }
 
-int ft_linkgraph(t_graph *graph, int fd, char **str, t_list **map)
+int			ft_linkgraph(t_graph *graph, int fd, char **str, t_list **map)
 {
 	char	*delim;
 
@@ -87,7 +73,7 @@ int ft_linkgraph(t_graph *graph, int fd, char **str, t_list **map)
 			ft_error(!ft_islink(*str), "Invalid links");
 			delim = ft_strchr(*str, '-');
 			*delim = '\0';
-			ft_error(!ft_linkvertex(graph, *str, delim + 1), "ft_linkvertex");
+			ft_error(!ft_linkvertex(graph, *str, delim + 1), "Invalid links");
 			*delim = '-';
 		}
 		ft_lstappend(map, ft_lstnew(*str, 0));
@@ -97,13 +83,7 @@ int ft_linkgraph(t_graph *graph, int fd, char **str, t_list **map)
 	return (0);
 }
 
-static void 	ft_rmline(void *content, size_t content_size)
-{
-	if (content || content_size > 0)
-		free(content);
-}
-
-int		ft_readfile(int fd, t_graph *graph, int *ants)
+int			ft_readfile(int fd, t_graph *graph, int *ants)
 {
 	char	*str;
 	t_list	*head;
@@ -124,22 +104,7 @@ int		ft_readfile(int fd, t_graph *graph, int *ants)
 	ft_error((lst == NULL), "Link between start and end doesn't exist");
 	ft_lstdel(&lst, ft_lstrm);
 	ft_strdel(&str);
-//	ft_lstiter(head, ft_printline); //todo uncomment
-	ft_lstdel(&head, ft_rmline);
+	ft_lstiter(head, ft_printline);
+	ft_lstdel(&head, ft_lstrm);
 	return (0);
-}
-
-void	ft_error(int trigger, char const *msg)
-{
-	if (trigger)
-	{
-		ft_dprintf(2, "ERROR: %s\n", msg);
-		exit(0);
-	}
-}
-
-void	ft_warning(int trigger, char const *msg)
-{
-	if (trigger)
-		ft_dprintf(2, "WARNING: %s\n", msg);
 }

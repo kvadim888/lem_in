@@ -34,7 +34,7 @@ static t_list	*ft_newbranch(t_vertex *vertex)
 		tail = tail->next;
 		lst = ((t_route *)lst->content)->vertex->link;
 	}
-	ft_printf("\x1B[31m branch: \x1B[0m"); ft_lstiter(branch, ft_pathshow);
+	ft_printf("\x1B[31m branch: \x1B[0m"); ft_lstiter(branch, ft_pathshow); //todo delete
 	return (branch);
 }
 

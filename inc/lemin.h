@@ -57,9 +57,10 @@ void				ft_readvertex(char *str, t_vertex *vertex);
 int					ft_newlink(t_vertex *v1, t_vertex *v2);
 int					ft_linkvertex(t_graph *graph, char *name1, char *name2);
 
-int					ft_label(char *str);
-int					ft_isnumber(char *num);
+int					ft_islabel(char *str);
+int					ft_iscomment(char const *str);
 int					ft_islink(char *str);
+int					ft_isnumber(char *num);
 
 void				ft_error(int trigger, char const *msg);
 void				ft_warning(int trigger, char const *msg);
@@ -69,6 +70,7 @@ void				ft_bfsreset(t_list *vertex);
 
 void				ft_addflow(t_list *link);
 
+void				ft_printline(t_list *lst);
 void				ft_lemin(t_list *path, int num);
 t_solving			*ft_newsolving(t_graph *graph, int ants);
 int					ft_simulate(t_graph *graph);

@@ -21,16 +21,18 @@ SRC_PATH	=	./src
 OBJ_PATH	=	./obj
 
 SRC			=	main.c\
-                reader.c\
-                validator.c\
+                alert.c\
+                bfsearch.c\
+                flow_calculation.c\
                 graph.c\
+                new_solving.c\
+                output.c\
+                reader.c\
+                recognizer.c\
                 simulator.c\
                 solver.c\
-                new_solving.c\
-                flow_calculation.c\
-                bfsearch.c\
                 todelete.c\
-                output.c
+                vertex.c
 
 OBJ			=	$(addprefix $(OBJ_PATH)/,$(SRC:.c=.o))
 
@@ -45,7 +47,7 @@ $(OBJ_PATH):
 	mkdir -p $(OBJ_PATH)
 
 $(OBJ_PATH)/%.o:$(SRC_PATH)/%.c
-	$(CC) $(INC) -o $@ -c $< #$(FLAGS)
+	$(CC) $(INC) -o $@ -c $< $(FLAGS)
 
 $(NAME): $(OBJ)
 	make -C libft/

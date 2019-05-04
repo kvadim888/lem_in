@@ -12,29 +12,26 @@
 
 #include "lemin.h"
 
-static t_list	*ft_ants(int num)
+void		ft_printline(t_list *lst)
 {
-	t_list	*ants;
-
-	ants = NULL;
-	while (num > 0)
-		ft_lstadd(&ants, ft_lstnew(&(t_ant){NULL, num--}, sizeof(t_ant)));
-	return (ants);
+	lst->content_size = ft_strlen(lst->content);
+	ft_memset(lst->content + lst->content_size, '\n', 1);
+	write(1, lst->content, lst->content_size + 1);
 }
 
-static void		ft_printstep(t_list *lst)
+static void	ft_printstep(t_list *lst)
 {
 	t_ant		*ant;
 
 	if (!lst->content)
-		return;
+		return ;
 	ant = lst->content;
 	if (!(ant->room && ant->room->content))
 		return ;
 	ft_printf("L%d-%s ", ant->number, ((t_vertex *)ant->room->content)->name);
 }
 
-static int		ft_moveant(t_ant *ant, t_list **path)
+static int	ft_moveant(t_ant *ant, t_list **path)
 {
 	t_list	*next_room;
 
@@ -57,7 +54,7 @@ static int		ft_moveant(t_ant *ant, t_list **path)
 	return (1);
 }
 
-static int		ft_step(t_list **path, t_list *antlist)
+static int	ft_step(t_list **path, t_list *antlist)
 {
 	int		finish;
 
@@ -79,15 +76,17 @@ static int		ft_step(t_list **path, t_list *antlist)
 	return (finish);
 }
 
-void			ft_lemin(t_list *path, int num)
+void		ft_lemin(t_list *path, int num)
 {
-	t_list	*lstant;
+	t_list	*ants;
 
-	lstant = ft_ants(num);
-	while (!ft_step(&path, lstant))
+	ants = NULL;
+	while (num > 0)
+		ft_lstadd(&ants, ft_lstnew(&(t_ant){NULL, num--}, sizeof(t_ant)));
+	while (!ft_step(&path, ants))
 	{
-		ft_lstiter(lstant, ft_printstep);
+		ft_lstiter(ants, ft_printstep);
 		ft_putchar('\n');
 	}
-	ft_lstdel(&lstant, ft_lstrm);
+	ft_lstdel(&ants, ft_lstrm);
 }

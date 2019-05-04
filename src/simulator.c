@@ -12,7 +12,7 @@
 
 #include "lemin.h"
 
-static void		ft_add(t_list *link)
+static void	ft_add(t_list *link)
 {
 	t_route		*route;
 
@@ -20,7 +20,7 @@ static void		ft_add(t_list *link)
 	route->vertex->status += (route->flow > 0) ? route->flow : 0;
 }
 
-static void		ft_letflow(t_list *lst)
+static void	ft_letflow(t_list *lst)
 {
 	t_vertex	*vertex;
 
@@ -28,7 +28,7 @@ static void		ft_letflow(t_list *lst)
 	ft_lstiter(vertex->link, ft_add);
 }
 
-int				ft_simulate(t_graph *graph)
+int			ft_simulate(t_graph *graph)
 {
 	t_list		*lst;
 
